@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: selo_fiea_frontend
+    restart: always
+    ports:
+      - "80:80" # Acessível em http://localhost
+    # Não precisa de 'networks' ou 'depends_on' se rodar separado,
+    # pois ele vai se comunicar com o back via HTTP "pela internet" (ou localhost).
