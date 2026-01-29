@@ -1,0 +1,48 @@
+
+query: SELECT SCHEMA_NAME() AS "schema_name"
+query: SELECT * FROM "selo_fiea"."INFORMATION_SCHEMA"."TABLES" WHERE "TABLE_NAME" = 'migrations' AND "TABLE_SCHEMA" = 'dbo'
+query: SELECT * FROM "selo_fiea"."dbo"."migrations" "migrations" ORDER BY "id" DESC
+0 migrations are already loaded in the database.
+4 migrations were found in the source code.
+4 migrations are new migrations must be executed.
+query: BEGIN TRANSACTION
+query: SELECT * FROM "selo_fiea"."INFORMATION_SCHEMA"."TABLES" WHERE "TABLE_NAME" = 'users' AND "TABLE_SCHEMA" = 'dbo'
+query: CREATE TABLE "users" ("id" uniqueidentifier NOT NULL CONSTRAINT "DF_a3ffb1c0c8416b9fc6f907b7433" DEFAULT NEWSEQUENTIALID(), "name" varchar(255) NOT NULL, "email" varchar(255) NOT NULL, "password" varchar(255) NOT NULL, "role" varchar(50) NOT NULL CONSTRAINT "DF_ace513fa30d485cfd25c11a9e4a" DEFAULT 'user', "company" varchar(100), "isActive" bit NOT NULL CONSTRAINT "DF_409a0298fdd86a6495e23c25c66" DEFAULT 1, "emailVerified" bit NOT NULL CONSTRAINT "DF_19f0320dbf4e94fabff881c0be2" DEFAULT 0, "createdAt" datetime NOT NULL CONSTRAINT "DF_204e9b624861ff4a5b268192101" DEFAULT GETDATE(), "updatedAt" datetime NOT NULL CONSTRAINT "DF_0f5cbe00928ba4489cc7312573b" DEFAULT GETDATE(), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))
+query: CREATE UNIQUE INDEX idx_users_email ON users(email)
+query: INSERT INTO "selo_fiea"."dbo"."migrations"("timestamp", "name") VALUES (@0, @1) -- PARAMETERS: [{"value":1730000000000,"type":"bigint","params":[]},{"value":"CreateUserTable1730000000000","type":"varchar","params":[]}]
+Migration CreateUserTable1730000000000 has been executed successfully.
+query: SELECT SCHEMA_NAME() AS "schema_name"
+query: SELECT DB_NAME() AS "db_name"
+query: 
+                    SELECT DISTINCT
+                        "TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME"
+                    FROM "selo_fiea"."INFORMATION_SCHEMA"."TABLES"
+                    WHERE
+                          "TABLE_TYPE" = 'BASE TABLE' AND
+                          "TABLE_CATALOG" = 'selo_fiea' AND
+                          ("TABLE_SCHEMA" = 'dbo' AND "TABLE_NAME" = 'users')
+
+query: SELECT "COLUMNS".*, "cc"."is_persisted", "cc"."definition" FROM "selo_fiea"."INFORMATION_SCHEMA"."COLUMNS" LEFT JOIN "sys"."computed_columns" "cc" ON COL_NAME("cc"."object_id", "cc"."column_id") = "column_name" WHERE (("TABLE_SCHEMA" = 'dbo' AND "TABLE_NAME" = 'users'))
+query: SELECT "columnUsages".*, "tableConstraints"."CONSTRAINT_TYPE", "chk"."definition" FROM "selo_fiea"."INFORMATION_SCHEMA"."CONSTRAINT_COLUMN_USAGE" "columnUsages" INNER JOIN "selo_fiea"."INFORMATION_SCHEMA"."TABLE_CONSTRAINTS" "tableConstraints" ON "tableConstraints"."CONSTRAINT_NAME" = "columnUsages"."CONSTRAINT_NAME" AND "tableConstraints"."TABLE_SCHEMA" = "columnUsages"."TABLE_SCHEMA" AND "tableConstraints"."TABLE_NAME" = "columnUsages"."TABLE_NAME" LEFT JOIN "selo_fiea"."sys"."check_constraints" "chk" ON "chk"."object_id" = OBJECT_ID("columnUsages"."TABLE_CATALOG" + '.' + "columnUsages"."TABLE_SCHEMA" + '.' + "columnUsages"."CONSTRAINT_NAME") WHERE (("columnUsages"."TABLE_SCHEMA" = 'dbo' AND "columnUsages"."TABLE_NAME" = 'users')) AND "tableConstraints"."CONSTRAINT_TYPE" IN ('PRIMARY KEY', 'UNIQUE', 'CHECK')
+query: SELECT "fk"."name" AS "FK_NAME", 'selo_fiea' AS "TABLE_CATALOG", "s1"."name" AS "TABLE_SCHEMA", "t1"."name" AS "TABLE_NAME", "col1"."name" AS "COLUMN_NAME", "s2"."name" AS "REF_SCHEMA", "t2"."name" AS "REF_TABLE", "col2"."name" AS "REF_COLUMN", "fk"."delete_referential_action_desc" AS "ON_DELETE", "fk"."update_referential_action_desc" AS "ON_UPDATE" FROM "selo_fiea"."sys"."foreign_keys" "fk" INNER JOIN "selo_fiea"."sys"."foreign_key_columns" "fkc" ON "fkc"."constraint_object_id" = "fk"."object_id" INNER JOIN "selo_fiea"."sys"."tables" "t1" ON "t1"."object_id" = "fk"."parent_object_id" INNER JOIN "selo_fiea"."sys"."schemas" "s1" ON "s1"."schema_id" = "t1"."schema_id" INNER JOIN "selo_fiea"."sys"."tables" "t2" ON "t2"."object_id" = "fk"."referenced_object_id" INNER JOIN "selo_fiea"."sys"."schemas" "s2" ON "s2"."schema_id" = "t2"."schema_id" INNER JOIN "selo_fiea"."sys"."columns" "col1" ON "col1"."column_id" = "fkc"."parent_column_id" AND "col1"."object_id" = "fk"."parent_object_id" INNER JOIN "selo_fiea"."sys"."columns" "col2" ON "col2"."column_id" = "fkc"."referenced_column_id" AND "col2"."object_id" = "fk"."referenced_object_id" WHERE (("s1"."name" = 'dbo' AND "t1"."name" = 'users'))
+query: SELECT "TABLE_CATALOG", "TABLE_SCHEMA", "COLUMN_NAME", "TABLE_NAME" FROM "selo_fiea"."INFORMATION_SCHEMA"."COLUMNS" WHERE EXISTS(SELECT 1 FROM "selo_fiea"."sys"."columns" "S" WHERE OBJECT_ID("TABLE_CATALOG" + '.' + "TABLE_SCHEMA" + '.' + "TABLE_NAME") = "S"."OBJECT_ID" AND "COLUMN_NAME" = "S"."NAME" AND "S"."is_identity" = 1) AND (("TABLE_SCHEMA" = 'dbo' AND "TABLE_NAME" = 'users'))
+query: SELECT "NAME", "COLLATION_NAME" FROM "sys"."databases"
+query: SELECT 'selo_fiea' AS "TABLE_CATALOG", "s"."name" AS "TABLE_SCHEMA", "t"."name" AS "TABLE_NAME", "ind"."name" AS "INDEX_NAME", "col"."name" AS "COLUMN_NAME", "ind"."is_unique" AS "IS_UNIQUE", "ind"."filter_definition" as "CONDITION" FROM "selo_fiea"."sys"."indexes" "ind" INNER JOIN "selo_fiea"."sys"."index_columns" "ic" ON "ic"."object_id" = "ind"."object_id" AND "ic"."index_id" = "ind"."index_id" INNER JOIN "selo_fiea"."sys"."columns" "col" ON "col"."object_id" = "ic"."object_id" AND "col"."column_id" = "ic"."column_id" INNER JOIN "selo_fiea"."sys"."tables" "t" ON "t"."object_id" = "ind"."object_id" INNER JOIN "selo_fiea"."sys"."schemas" "s" ON "s"."schema_id" = "t"."schema_id" WHERE "ind"."is_primary_key" = 0 AND "ind"."is_unique_constraint" = 0 AND "t"."is_ms_shipped" = 0 AND (("s"."name" = 'dbo' AND "t"."name" = 'users'))
+query: ALTER TABLE "users" ADD "failedLoginAttempts" int NOT NULL CONSTRAINT "DF_609348fbac417e0e99cb14b0e4d" DEFAULT 0
+query: ALTER TABLE "users" ADD "lockedUntil" datetime
+query: INSERT INTO "selo_fiea"."dbo"."migrations"("timestamp", "name") VALUES (@0, @1) -- PARAMETERS: [{"value":1730200000000,"type":"bigint","params":[]},{"value":"AddLoginAttemptsToUser1730200000000","type":"varchar","params":[]}]
+Migration AddLoginAttemptsToUser1730200000000 has been executed successfully.
+query: ALTER TABLE "users" ADD "resetPasswordToken" varchar(255)
+query: ALTER TABLE "users" ADD "resetPasswordExpires" datetime
+query: INSERT INTO "selo_fiea"."dbo"."migrations"("timestamp", "name") VALUES (@0, @1) -- PARAMETERS: [{"value":1730300000000,"type":"bigint","params":[]},{"value":"AddResetPasswordToUser1730300000000","type":"varchar","params":[]}]
+Migration AddResetPasswordToUser1730300000000 has been executed successfully.
+query: SELECT "User"."id" AS "User_id", "User"."name" AS "User_name", "User"."email" AS "User_email", "User"."password" AS "User_password", "User"."role" AS "User_role", "User"."company" AS "User_company", "User"."isActive" AS "User_isActive", "User"."emailVerified" AS "User_emailVerified", "User"."failedLoginAttempts" AS "User_failedLoginAttempts", "User"."lockedUntil" AS "User_lockedUntil", "User"."resetPasswordToken" AS "User_resetPasswordToken", "User"."resetPasswordExpires" AS "User_resetPasswordExpires", "User"."createdAt" AS "User_createdAt", "User"."updatedAt" AS "User_updatedAt" FROM "dbo"."users" "User" WHERE (("User"."email" = @0)) ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY -- PARAMETERS: [{"value":"admin@selofiea.com","type":"varchar","params":["255"]}]
+query: DECLARE @OutputTable TABLE ("id" uniqueidentifier, "role" varchar(50), "isActive" bit, "emailVerified" bit, "failedLoginAttempts" int, "createdAt" datetime, "updatedAt" datetime);
+
+INSERT INTO "dbo"."users"("id", "name", "email", "password", "role", "company", "isActive", "emailVerified", "failedLoginAttempts", "lockedUntil", "resetPasswordToken", "resetPasswordExpires", "createdAt", "updatedAt") OUTPUT INSERTED."id", INSERTED."role", INSERTED."isActive", INSERTED."emailVerified", INSERTED."failedLoginAttempts", INSERTED."createdAt", INSERTED."updatedAt" INTO @OutputTable VALUES (DEFAULT, @0, @1, @2, @3, DEFAULT, @4, @5, DEFAULT, DEFAULT, DEFAULT, DEFAULT, @6, @7);
+
+SELECT * FROM @OutputTable -- PARAMETERS: [{"value":"Administrador Geral","type":"varchar","params":["255"]},{"value":"admin@selofiea.com","type":"varchar","params":["255"]},{"value":"$2b$10$my/VEJyAgxrB9nHxttmH2eV4IEvAoS7KcCDLt63APuiYr0j5/WMm6","type":"varchar","params":["255"]},{"value":"admin","type":"varchar","params":["50"]},{"value":true,"type":"bit","params":[]},{"value":true,"type":"bit","params":[]},{"value":"2025-11-17T00:54:53.000Z","type":"datetime","params":[]},{"value":"2025-11-17T00:54:53.000Z","type":"datetime","params":[]}]
+Usuário admin padrão criado com sucesso!
+query: INSERT INTO "selo_fiea"."dbo"."migrations"("timestamp", "name") VALUES (@0, @1) -- PARAMETERS: [{"value":1763325844267,"type":"bigint","params":[]},{"value":"SeedInitialAdmin1763325844267","type":"varchar","params":[]}]
+Migration SeedInitialAdmin1763325844267 has been executed successfully.
+query: COMMIT

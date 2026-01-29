@@ -1,0 +1,67 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    container_name: sqlserver_dev
+    restart: unless-stopped
+    hostname: sqlserver_dev
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: Senha!123
+      TZ: America/Sao_Paulo
+    ports:
+      - '1433:1433'
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - selo_network
+  api:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: selo_fiea_api
+      restart: unless-stopped
+      healthcheck:
+        test: ["CMD", "ls", "-l", "/usr/src/app/package.json"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      ports:
+        - '3000:3000' # Mapeia a porta do host para a porta do container
+      networks:
+        - selo_network
+      depends_on:
+        - sqlserver # Garante que o banco de dados inicie primeiro
+      volumes:
+        # Mantenha o diretório de uploads persistente
+        - uploads_data:/usr/src/app/uploads
+      environment:
+        NODE_ENV: production
+        # Configurações de Conexão com o Banco de Dados (IMPORTANTE!)
+        # O DB_HOST é o NOME DO SERVIÇO do banco de dados (sqlserver)
+        FRONTEND_URL: http://localhost,http://localhost:80,http://localhost:5173
+        DB_HOST: sqlserver 
+        DB_PORT: 1433
+        DB_USERNAME: sa # Usuário do SQL Server
+        DB_PASSWORD: Senha!123 # Senha do SQL Server (definida no serviço sqlserver)
+        DB_DATABASE: selo_fiea # Nome do banco (conforme README)
+        DB_SCHEMA: dbo
+        
+        # Variáveis da API
+        PORT: 3000
+        # As demais variáveis (JWT_SECRET, MAIL_USER, FRONTEND_URL, etc.)
+        # devem ser carregadas via .env file, ou definidas aqui.
+        # Usar env_file é a melhor prática.
+        # Exemplo de JWT_SECRET (Lembre-se de usar um valor forte em PROD!)
+        JWT_SECRET: b4ed1b51e41f6d0ce6a312e9db9a8e09
+      # Opção 1: Usar um arquivo .env dedicado para o container (recomendado)
+      env_file:
+        - .env # Usará o .env na raiz do backend
+        
+volumes:
+  sqlserver_data:
+  uploads_data: # Novo volume para persistir arquivos de uploads
+    
+networks:
+  selo_network:
+    driver: bridge
